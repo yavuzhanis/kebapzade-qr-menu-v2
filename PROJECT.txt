@@ -1,0 +1,6 @@
+Kebapzade Premium V1.1
+PHP + MySQL
+Admin: /admin/login.php
+Reservations: /admin/reservations.php
+QR: /admin/qr-menu.php
+Existing V1 upgrade: /update-v1.1.php
