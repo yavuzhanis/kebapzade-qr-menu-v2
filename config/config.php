@@ -9,18 +9,17 @@ if (file_exists(__DIR__ . '/config.local.php')) {
 
 $default = [
     'app' => [
-        'name' => 'Kebapzade Premium',
-        'base_url' => '', // Boş bırakıldığında canlı alan adı (kebabzadeqr.freehosting.dev) otomatik tespit edilir
-        'timezone' => 'Europe/Istanbul',
+        'name' => getenv('APP_NAME') ?: 'Kebapzade Premium',
+        'base_url' => getenv('APP_URL') ?: '', // Boş bırakıldığında otomatik tespit edilir
+        'timezone' => getenv('APP_TIMEZONE') ?: 'Europe/Istanbul',
         'session_name' => 'kebapzade_admin',
     ],
     'db' => [
-        // InfinityFree Canlı MySQL Bilgileri
-        'host' => 'sql304.infinityfree.com',
-        'port' => 3306,
-        'name' => 'if0_42983387_menu',
-        'user' => 'if0_42983387',
-        'pass' => 'magevS4uihhv',
+        'host' => getenv('DB_HOST') ?: '127.0.0.1',
+        'port' => (int)(getenv('DB_PORT') ?: 3306),
+        'name' => getenv('DB_NAME') ?: 'kebapzade_menu',
+        'user' => getenv('DB_USER') ?: 'kebapzade',
+        'pass' => getenv('DB_PASS') !== false ? (string)getenv('DB_PASS') : 'kebapzade123',
         'charset' => 'utf8mb4',
     ],
     'upload' => [
