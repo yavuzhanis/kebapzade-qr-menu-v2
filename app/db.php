@@ -25,8 +25,14 @@ function db(array $config): PDO
 
     $sslEnabled = (bool)($d['ssl'] ?? false);
     $sslCa = trim((string)($d['ssl_ca'] ?? ''));
-    if ($sslEnabled && $sslCa !== '' && defined('PDO::MYSQL_ATTR_SSL_CA')) {
-        $options[PDO::MYSQL_ATTR_SSL_CA] = $sslCa;
+    if ($sslEnabled && defined('PDO::MYSQL_ATTR_SSL_CA')) {
+        if ($sslCa !== '') {
+            $options[PDO::MYSQL_ATTR_SSL_CA] = $sslCa;
+        } elseif (file_exists('/etc/ssl/certs/ca-certificates.crt')) {
+            $options[PDO::MYSQL_ATTR_SSL_CA] = '/etc/ssl/certs/ca-certificates.crt';
+        } elseif (file_exists('/etc/ssl/cert.pem')) {
+            $options[PDO::MYSQL_ATTR_SSL_CA] = '/etc/ssl/cert.pem';
+        }
     }
     if ($sslEnabled && defined('PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT')) {
         $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = (bool)($d['ssl_verify_server_cert'] ?? true);

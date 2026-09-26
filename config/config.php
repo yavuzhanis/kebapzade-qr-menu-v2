@@ -48,8 +48,9 @@ $default = [
         'name' => getenv('DB_NAME') ?: ($urlDb['name'] ?? 'kebapzade_menu'),
         'user' => getenv('DB_USER') ?: ($urlDb['user'] ?? 'kebapzade'),
         'pass' => getenv('DB_PASS') !== false ? (string)getenv('DB_PASS') : (string)($urlDb['pass'] ?? ''),
-        'charset' => getenv('DB_CHARSET') ?: 'utf8mb4',
-        'ssl' => $envBool('DB_SSL', false) || (getenv('DB_SSL_CA') ?: '') !== '',
+        'ssl' => $envBool('DB_SSL', false)
+            || (getenv('DB_SSL_CA') ?: '') !== ''
+            || (isset($urlDb['host']) && (str_contains((string)$urlDb['host'], 'tidbcloud.com') || str_contains((string)$urlDb['host'], 'aivencloud.com'))),
         'ssl_ca' => getenv('DB_SSL_CA') ?: '',
         'ssl_verify_server_cert' => $envBool('DB_SSL_VERIFY_SERVER_CERT', true),
         'timeout' => max(1, (int)(getenv('DB_TIMEOUT') ?: 5)),
