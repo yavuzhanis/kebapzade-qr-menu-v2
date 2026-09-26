@@ -29,6 +29,18 @@ if ($dbUrl !== '') {
     }
 }
 
+$isHostInvalid = empty($urlDb['host'])
+    || str_contains(strtolower((string)($urlDb['host'] ?? '')), 'host')
+    || in_array(($urlDb['host'] ?? ''), ['localhost', '127.0.0.1', '127.0.0.1:3306'], true);
+
+if ($isHostInvalid) {
+    $urlDb['host'] = 'gateway01.eu-central-1.prod.aws.tidbcloud.com';
+    $urlDb['port'] = 4000;
+    $urlDb['name'] = 'kebapzade_menu';
+    $urlDb['user'] = '3RQj7cL7zcTnjxt.root';
+    $urlDb['pass'] = 'TrkYjY2v1hNIet6Z';
+}
+
 $blobToken = (string)(getenv('BLOB_READ_WRITE_TOKEN') ?: '');
 $blobOidcToken = (string)(getenv('VERCEL_OIDC_TOKEN') ?: '');
 $blobStoreId = (string)(getenv('BLOB_STORE_ID') ?: '');

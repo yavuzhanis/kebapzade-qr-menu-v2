@@ -1,9 +1,18 @@
 <?php
 declare(strict_types=1);
-header('Content-Type: application/json; charset=utf-8');
+$dbStatus = 'unknown';
+try {
+    require_once __DIR__ . '/app/bootstrap.php';
+    $categories = db($config)->query("SELECT count(*) FROM categories")->fetchColumn();
+    $dbStatus = 'connected (' . $categories . ' categories)';
+} catch (Throwable $e) {
+    $dbStatus = 'error: ' . $e->getMessage();
+}
+
 $out = [
     'status' => 'ok',
     'php' => PHP_VERSION,
+    'db' => $dbStatus,
     'extensions' => [
         'pdo_mysql' => extension_loaded('pdo_mysql'),
         'fileinfo' => extension_loaded('fileinfo'),
