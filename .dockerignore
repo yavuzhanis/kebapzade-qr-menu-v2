@@ -1,0 +1,23 @@
+# VCS / OS
+.git
+.github
+.DS_Store
+__MACOSX
+
+# Local secrets
+.env
+.env.*
+!/.env.example
+config/config.local.php
+
+# Legacy Render deployment
+Dockerfile
+entrypoint.sh
+render.yaml
+
+# Never bake live DB dumps into the image
+database/kebapzade_live.sql
+
+# Local archives
+*.zip
+*.tar.gz

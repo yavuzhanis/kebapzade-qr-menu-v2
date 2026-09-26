@@ -8,8 +8,18 @@ function e(?string $value): string {
 function base_url(string $path = ''): string {
     global $config;
     $base = rtrim((string)($config['app']['base_url'] ?? ''), '/');
-    if ($path === '') return $base ?: '';
-    return $base . '/' . ltrim($path, '/');
+
+    if ($base === '') {
+        $protoHeader = trim(explode(',', (string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''))[0] ?? '');
+        $proto = strtolower($protoHeader) === 'https' || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $hostHeader = trim(explode(',', (string)($_SERVER['HTTP_X_FORWARDED_HOST'] ?? $_SERVER['HTTP_HOST'] ?? ''))[0] ?? '');
+        if ($hostHeader !== '' && preg_match('/^[A-Za-z0-9.-]+(?::[0-9]{1,5})?$/', $hostHeader)) {
+            $base = $proto . '://' . $hostHeader;
+        }
+    }
+
+    if ($path === '') return $base;
+    return $base !== '' ? $base . '/' . ltrim($path, '/') : '/' . ltrim($path, '/');
 }
 
 function redirect(string $path): never {

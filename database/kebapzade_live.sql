@@ -40,7 +40,7 @@ CREATE TABLE `admins` (
 
 LOCK TABLES `admins` WRITE;
 /*!40000 ALTER TABLE `admins` DISABLE KEYS */;
-INSERT INTO `admins` VALUES (1,'Yönetici','admin@kebapzade.com','$2y$12$fMyDN5Jx.KTGFeegnY4pAOksSp8TQF9OJITukwtlpHDRdcCzu4p1u','2026-09-20 11:42:52','2026-09-20 11:42:52');
+-- Admin kaydı güvenlik nedeniyle deploy paketinden çıkarıldı. install.php ile yeni admin oluşturun.
 /*!40000 ALTER TABLE `admins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -347,3 +347,15 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-09-22 18:25:15
+
+
+-- Vercel database sessions
+DROP TABLE IF EXISTS `app_sessions`;
+CREATE TABLE `app_sessions` (
+  `id` varchar(128) NOT NULL,
+  `payload` mediumblob NOT NULL,
+  `last_activity` bigint unsigned NOT NULL,
+  `expires_at` bigint unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_session_expiry` (`expires_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

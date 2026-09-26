@@ -54,3 +54,7 @@ Mevcut ürün, kategori ve fiyat verileri silinmez.
 
 ## Not
 Mevcut Kebapzade menüsünden oluşturulan başlangıç verisinde fiyatlar büyük ölçüde boş bırakılmıştır. Fiyatları admin panelinden güncelleyin.
+
+
+## Vercel Deploy
+Bu proje Vercel container runtime için güncellenmiştir. Ayrıntılı kurulum için `VERCEL_DEPLOY.md` dosyasına bakın.

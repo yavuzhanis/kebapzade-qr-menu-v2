@@ -16,17 +16,29 @@ function db(array $config): PDO
         $d['charset'] ?? 'utf8mb4'
     );
 
+    $options = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+        PDO::ATTR_TIMEOUT => (int)($d['timeout'] ?? 5),
+    ];
+
+    $sslEnabled = (bool)($d['ssl'] ?? false);
+    $sslCa = trim((string)($d['ssl_ca'] ?? ''));
+    if ($sslEnabled && $sslCa !== '' && defined('PDO::MYSQL_ATTR_SSL_CA')) {
+        $options[PDO::MYSQL_ATTR_SSL_CA] = $sslCa;
+    }
+    if ($sslEnabled && defined('PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT')) {
+        $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = (bool)($d['ssl_verify_server_cert'] ?? true);
+    }
+
     try {
-        $pdo = new PDO($dsn, $d['user'], $d['pass'], [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ]);
+        $pdo = new PDO($dsn, (string)$d['user'], (string)$d['pass'], $options);
         return $pdo;
     } catch (Throwable $e) {
         http_response_code(500);
-        $msg = 'Veritabanı bağlantısı kurulamadı. Lütfen config/config.php ayarlarınızı kontrol edin.';
-        if (isset($_GET['debug_db'])) {
+        $msg = 'Veritabanı bağlantısı kurulamadı. Sunucu yapılandırmasını kontrol edin.';
+        if (($config['app']['debug'] ?? false) === true) {
             $msg .= '<br><br><strong>Hata Detayı:</strong> ' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
         }
         exit($msg);

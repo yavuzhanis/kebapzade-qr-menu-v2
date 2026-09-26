@@ -8,6 +8,6 @@ Header always set Referrer-Policy "strict-origin-when-cross-origin"
 Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
 </IfModule>
 
-<FilesMatch "^(\.env|README\.md|composer\.(json|lock))$">
+<FilesMatch "^(\.env.*|README\.md|VERCEL_DEPLOY\.md|composer\.(json|lock)|Dockerfile.*|vercel\.json|vercel-entrypoint\.sh)$">
     Require all denied
 </FilesMatch>

@@ -1,0 +1,22 @@
+FROM php:8.2-apache
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libcurl4-openssl-dev \
+        libonig-dev \
+    && docker-php-ext-install -j"$(nproc)" pdo_mysql mbstring curl \
+    && a2enmod rewrite headers \
+    && sed -ri 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /var/www/html
+COPY . /var/www/html/
+
+RUN mkdir -p /var/www/html/uploads/menu /var/www/html/uploads/site \
+    && chown -R www-data:www-data /var/www/html/uploads \
+    && chmod -R 775 /var/www/html/uploads \
+    && chmod +x /var/www/html/vercel-entrypoint.sh
+
+ENV PORT=80
+EXPOSE 80
+
+CMD ["/var/www/html/vercel-entrypoint.sh"]
