@@ -70,7 +70,8 @@ $default = [
         'site_dir' => __DIR__ . '/../uploads/site',
     ],
     'storage' => [
-        'driver' => getenv('STORAGE_DRIVER') ?: $storageDefault,
+        // Not: 'STORAGE_DRIVER' Buildah/Vercel container tarafından rezerve edildiği için APP_STORAGE_DRIVER kullanılır.
+        'driver' => getenv('APP_STORAGE_DRIVER') ?: $storageDefault,
         'blob_api_url' => rtrim((string)(getenv('VERCEL_BLOB_API_URL') ?: 'https://vercel.com/api/blob'), '/'),
         'blob_token' => $blobToken,
         'blob_oidc_token' => $blobOidcToken,
