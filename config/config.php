@@ -43,17 +43,16 @@ $default = [
         'session_name' => getenv('SESSION_NAME') ?: 'kebapzade_admin',
     ],
     'db' => [
-        'host' => getenv('DB_HOST') ?: ($urlDb['host'] ?? '127.0.0.1'),
-        'port' => (int)(getenv('DB_PORT') ?: ($urlDb['port'] ?? 3306)),
+        'host' => getenv('DB_HOST') ?: ($urlDb['host'] ?? 'gateway01.eu-central-1.prod.aws.tidbcloud.com'),
+        'port' => (int)(getenv('DB_PORT') ?: ($urlDb['port'] ?? 4000)),
         'name' => getenv('DB_NAME') ?: ($urlDb['name'] ?? 'kebapzade_menu'),
-        'user' => getenv('DB_USER') ?: ($urlDb['user'] ?? 'kebapzade'),
-        'pass' => getenv('DB_PASS') !== false ? (string)getenv('DB_PASS') : (string)($urlDb['pass'] ?? ''),
-        'ssl' => $envBool('DB_SSL', false)
-            || (getenv('DB_SSL_CA') ?: '') !== ''
-            || (isset($urlDb['host']) && (str_contains((string)$urlDb['host'], 'tidbcloud.com') || str_contains((string)$urlDb['host'], 'aivencloud.com'))),
+        'user' => getenv('DB_USER') ?: ($urlDb['user'] ?? '3RQj7cL7zcTnjxt.root'),
+        'pass' => (getenv('DB_PASS') !== false && getenv('DB_PASS') !== '') ? (string)getenv('DB_PASS') : (string)($urlDb['pass'] ?? 'TrkYjY2v1hNIet6Z'),
+        'charset' => getenv('DB_CHARSET') ?: 'utf8mb4',
+        'ssl' => true,
         'ssl_ca' => getenv('DB_SSL_CA') ?: '',
         'ssl_verify_server_cert' => $envBool('DB_SSL_VERIFY_SERVER_CERT', true),
-        'timeout' => max(1, (int)(getenv('DB_TIMEOUT') ?: 5)),
+        'timeout' => max(1, (int)(getenv('DB_TIMEOUT') ?: 10)),
     ],
     'session' => [
         'driver' => getenv('SESSION_DRIVER') ?: 'database',

@@ -44,9 +44,7 @@ function db(array $config): PDO
     } catch (Throwable $e) {
         http_response_code(500);
         $msg = 'Veritabanı bağlantısı kurulamadı. Sunucu yapılandırmasını kontrol edin.';
-        if (($config['app']['debug'] ?? false) === true) {
-            $msg .= '<br><br><strong>Hata Detayı:</strong> ' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
-        }
+        $msg .= '<br><br><strong>Hata Detayı:</strong> ' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
         exit($msg);
     }
 }
