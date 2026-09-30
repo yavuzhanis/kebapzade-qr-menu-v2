@@ -15,6 +15,10 @@ if (!$welcomeImage) {
 
 $address = setting($pdo, 'address', 'Bilal Eroğlu Cd. No:3, Göreme / Nevşehir');
 $hours = setting($pdo, $L === 'en' ? 'hours_en' : 'hours_tr', $L === 'en' ? '10:00 – 23:00' : '10.00 – 23.00');
+$fridayNotice = trim(setting($pdo, $L === 'en' ? 'friday_notice_en' : 'friday_notice_tr'));
+if ($fridayNotice === '') $fridayNotice = $L === 'en' ? 'On Fridays, we open in the afternoon.' : 'Cuma günleri öğleden sonra açığız.';
+$instagram = trim(setting($pdo, 'instagram', 'https://www.instagram.com/kebapzaderestaurant/'));
+if ($instagram === '') $instagram = 'https://www.instagram.com/kebapzaderestaurant/';
 
 $t = [
     'title' => $L === 'en' ? 'Welcome to Kebapzade' : 'Kebapzade’ye Hoş Geldiniz',
@@ -24,6 +28,8 @@ $t = [
     'open' => $L === 'en' ? 'Open' : 'Açık',
     'view_menu' => $L === 'en' ? 'Explore Digital QR Menu' : 'Dijital QR Menüyü İncele',
     'menu_sub' => $L === 'en' ? 'Dishes, pottery kebab, appetizers & drinks' : 'Yemekler, testi kebabı, mezeler ve içecekler',
+    'instagram' => $L === 'en' ? 'Visit us on Instagram' : 'Instagram’da Bizi Takip Edin',
+    'instagram_sub' => '@kebapzaderestaurant',
     'badge_testi' => $L === 'en' ? 'Famous Pottery Kebab' : 'Meşhur Testi Kebabı',
     'badge_fire' => $L === 'en' ? 'Stone Oven & Charcoal' : 'Taş Fırın & Kömür Ateşi',
     'badge_rating' => '4.9 ★ (1.200+ Reviews)',
@@ -92,6 +98,10 @@ $t = [
 
     <h1 id="welcome-title"><?=e($t['title'])?></h1>
     <p class="welcome-copy"><?=e($t['tagline'])?></p>
+    <div class="friday-notice" role="note">
+      <span class="friday-notice-dot" aria-hidden="true"></span>
+      <strong><?=e($fridayNotice)?></strong>
+    </div>
 
     <!-- Main QR Menu Action Button -->
     <a class="welcome-primary-btn" href="<?=e(base_url('/qr-menu.php?lang='.$L))?>">
@@ -101,6 +111,19 @@ $t = [
       <div class="btn-text">
         <strong><?=e($t['view_menu'])?></strong>
         <small><?=e($t['menu_sub'])?></small>
+      </div>
+      <div class="btn-arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    </a>
+
+    <a class="welcome-primary-btn instagram-btn" href="<?=e($instagram)?>" target="_blank" rel="noopener" aria-label="Instagram">
+      <div class="btn-icon instagram-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle></svg>
+      </div>
+      <div class="btn-text">
+        <strong><?=e($t['instagram'])?></strong>
+        <small><?=e($t['instagram_sub'])?></small>
       </div>
       <div class="btn-arrow" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>

@@ -15,8 +15,11 @@ Saf PHP + MySQL ile hazırlanmış TR/EN karşılama ekranı, fotoğraflı QR me
 - Açık hava / şömine / özel yemek odası hizmet bölümü
 - Mobilde sabit Ara / WhatsApp / Masa Ayırt aksiyonları
 - Hero ve hikâye görselini admin'den yükleme
+- Vercel Blob güncel Store ID/public erişim uyumluluğu ve MySQL/TiDB görsel yedeği
 - Logo ve kategori kapak görsellerini admin'den yükleme
 - QR menü yönlendirmesi ve admin'de QR baskı ekranı
+- Cuma öğleden sonra açılış bilgilendirmesi
+- Karşılama ekranında Instagram butonu (@kebapzaderestaurant)
 - Restaurant Schema.org JSON-LD, canonical, OpenGraph, sitemap ve robots
 - CSRF, PDO prepared statement, güvenli görsel yükleme ve parola hash altyapısı
 
@@ -29,10 +32,10 @@ Saf PHP + MySQL ile hazırlanmış TR/EN karşılama ekranı, fotoğraflı QR me
 ## Sıfırdan Kurulum
 1. Dosyaları web köküne yükleyin.
 2. Boş MySQL veritabanı ve kullanıcı oluşturun.
-3. `config/config.php` veritabanı bilgilerini girin.
-4. `app.base_url` alanına canlı site adresini yazın. Örn: `https://kebapzade.com`
-5. `/install.php` adresini açıp ilk admin hesabını oluşturun.
-6. Kurulumdan sonra **install.php dosyasını silin**.
+3. Canlı ortamda veritabanı ve storage bilgilerini Environment Variables üzerinden tanımlayın; kaynak koda şifre yazmayın.
+4. Vercel için `VERCEL_DEPLOY.md` içindeki ayarları uygulayın.
+5. Yeni veritabanında geçici `INSTALL_TOKEN` tanımlayıp `/install.php?token=...` ile ilk admin hesabını oluşturun.
+6. Kurulumdan sonra `INSTALL_TOKEN` değişkenini silip yeniden deploy edin.
 7. `/admin/login.php` üzerinden giriş yapın.
 
 ## V1.1'den V2'ye Güncelleme

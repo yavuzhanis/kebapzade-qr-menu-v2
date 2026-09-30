@@ -29,22 +29,13 @@ if ($dbUrl !== '') {
     }
 }
 
-$isHostInvalid = empty($urlDb['host'])
-    || str_contains(strtolower((string)($urlDb['host'] ?? '')), 'host')
-    || in_array(($urlDb['host'] ?? ''), ['localhost', '127.0.0.1', '127.0.0.1:3306'], true);
-
-if ($isHostInvalid) {
-    $urlDb['host'] = 'gateway01.eu-central-1.prod.aws.tidbcloud.com';
-    $urlDb['port'] = 4000;
-    $urlDb['name'] = 'kebapzade_menu';
-    $urlDb['user'] = '3RQj7cL7zcTnjxt.root';
-    $urlDb['pass'] = 'TrkYjY2v1hNIet6Z';
-}
-
 $blobToken = (string)(getenv('BLOB_READ_WRITE_TOKEN') ?: '');
 $blobOidcToken = (string)(getenv('VERCEL_OIDC_TOKEN') ?: '');
 $blobStoreId = (string)(getenv('BLOB_STORE_ID') ?: '');
-$storageDefault = ($blobToken !== '' || ($blobOidcToken !== '' && $blobStoreId !== '')) ? 'vercel_blob' : 'local';
+$isVercel = (string)(getenv('VERCEL') ?: '') === '1' || (string)(getenv('VERCEL_ENV') ?: '') !== '';
+$hasBlobAuth = $blobToken !== '' || ($blobOidcToken !== '' && $blobStoreId !== '');
+// Vercel filesystem kalıcı olmadığı için Blob yoksa MySQL/TiDB yedeğine geçilir.
+$storageDefault = $hasBlobAuth ? 'vercel_blob' : ($isVercel ? 'database' : 'local');
 
 $default = [
     'app' => [
@@ -55,13 +46,13 @@ $default = [
         'session_name' => getenv('SESSION_NAME') ?: 'kebapzade_admin',
     ],
     'db' => [
-        'host' => getenv('DB_HOST') ?: ($urlDb['host'] ?? 'gateway01.eu-central-1.prod.aws.tidbcloud.com'),
-        'port' => (int)(getenv('DB_PORT') ?: ($urlDb['port'] ?? 4000)),
+        'host' => getenv('DB_HOST') ?: ($urlDb['host'] ?? '127.0.0.1'),
+        'port' => (int)(getenv('DB_PORT') ?: ($urlDb['port'] ?? 3306)),
         'name' => getenv('DB_NAME') ?: ($urlDb['name'] ?? 'kebapzade_menu'),
-        'user' => getenv('DB_USER') ?: ($urlDb['user'] ?? '3RQj7cL7zcTnjxt.root'),
-        'pass' => (getenv('DB_PASS') !== false && getenv('DB_PASS') !== '') ? (string)getenv('DB_PASS') : (string)($urlDb['pass'] ?? 'TrkYjY2v1hNIet6Z'),
+        'user' => getenv('DB_USER') ?: ($urlDb['user'] ?? ''),
+        'pass' => (getenv('DB_PASS') !== false && getenv('DB_PASS') !== '') ? (string)getenv('DB_PASS') : (string)($urlDb['pass'] ?? ''),
         'charset' => getenv('DB_CHARSET') ?: 'utf8mb4',
-        'ssl' => true,
+        'ssl' => $envBool('DB_SSL', true),
         'ssl_ca' => getenv('DB_SSL_CA') ?: '',
         'ssl_verify_server_cert' => $envBool('DB_SSL_VERIFY_SERVER_CERT', true),
         'timeout' => max(1, (int)(getenv('DB_TIMEOUT') ?: 10)),
@@ -88,6 +79,7 @@ $default = [
         'blob_token' => $blobToken,
         'blob_oidc_token' => $blobOidcToken,
         'blob_store_id' => $blobStoreId,
+        'database_fallback' => $envBool('STORAGE_DATABASE_FALLBACK', true),
     ],
 ];
 

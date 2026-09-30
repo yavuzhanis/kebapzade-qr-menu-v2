@@ -18,6 +18,10 @@ $whatsapp = preg_replace('/\D+/', '', setting($pdo, 'whatsapp', '903842713012'))
 $maps = setting($pdo, 'maps_url', 'https://www.google.com/maps/search/?api=1&query=Kebapzade+Goreme');
 $wifiPass = setting($pdo, 'wifi_pass', 'kebapzade2026');
 $hours = setting($pdo, $L === 'en' ? 'hours_en' : 'hours_tr', $L === 'en' ? '10:00 – 23:00' : '10.00 – 23.00');
+$fridayNotice = trim(setting($pdo, $L === 'en' ? 'friday_notice_en' : 'friday_notice_tr'));
+if ($fridayNotice === '') $fridayNotice = $L === 'en' ? 'On Fridays, we open in the afternoon.' : 'Cuma günleri öğleden sonra açığız.';
+$instagram = trim(setting($pdo, 'instagram', 'https://www.instagram.com/kebapzaderestaurant/'));
+if ($instagram === '') $instagram = 'https://www.instagram.com/kebapzaderestaurant/';
 
 $tableParam = trim((string)($_GET['table'] ?? ''));
 
@@ -108,6 +112,10 @@ $t = [
 
 <!-- Main Menu Content -->
 <main class="menu-content-wrap">
+  <div class="menu-friday-notice" role="note">
+    <span aria-hidden="true">i</span>
+    <strong><?=e($fridayNotice)?></strong>
+  </div>
   <div class="search-results-feedback" data-results-counter hidden></div>
   <div class="no-results-card" data-no-results hidden>
     <div class="no-results-icon">
@@ -253,6 +261,7 @@ $t = [
     </div>
     <p class="foot-heritage">Göreme · Cappadocia · Est. 2008</p>
     <p class="foot-quote">"Lezzetli ve kaliteli yemek tesadüf değildir."</p>
+    <a class="qr-instagram-link" href="<?=e($instagram)?>" target="_blank" rel="noopener">Instagram · @kebapzaderestaurant</a>
   </footer>
 </main>
 

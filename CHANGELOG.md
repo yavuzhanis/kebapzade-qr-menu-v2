@@ -18,3 +18,16 @@
 - Menü araması ve mobil hızlı işlem çubuğu eklendi.
 - Admin paneline logo ve kategori kapak görseli yönetimi eklendi.
 - Mevcut V1.1 verilerini koruyan `update-v2.php` yükseltmesi eklendi.
+
+
+## 2026-09-30 — Production image upload & social update
+- Vercel Blob upload headers updated for current Store ID and public-access requirements.
+- Database-backed image fallback added for Vercel/container deployments.
+- Friday afternoon opening notice added to welcome and QR menu screens.
+- Instagram CTA added below the QR menu CTA, defaulting to @kebapzaderestaurant.
+- Hard-coded database credentials removed from config defaults; production must use environment variables.
+
+### 2026-09-30 UI refinement
+- Friday opening notice changed to a high-contrast cream/gold panel with dark brown text.
+- Instagram CTA redesigned from pink to a compact Kebapzade brown/gold treatment with Instagram icon and text.
+- QR menu Friday notice updated to use the same readable cream/gold treatment.

@@ -1,6 +1,6 @@
-Kebapzade Premium V1.1
-PHP + MySQL
+Kebapzade QR Menü V2 — Production 2026-09-30
+PHP + MySQL/TiDB + Vercel Blob
 Admin: /admin/login.php
 Reservations: /admin/reservations.php
 QR: /admin/qr-menu.php
-Existing V1 upgrade: /update-v1.1.php
+Production deploy: /VERCEL_DEPLOY.md

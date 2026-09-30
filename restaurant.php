@@ -15,12 +15,15 @@ $heroTitle = setting($pdo, $L === 'en' ? 'hero_title_en' : 'hero_title_tr', 'Kap
 $tagline = setting($pdo, $L === 'en' ? 'tagline_en' : 'tagline_tr');
 $announcement = setting($pdo, $L === 'en' ? 'announcement_en' : 'announcement_tr');
 $hours = setting($pdo, $L === 'en' ? 'hours_en' : 'hours_tr');
+$fridayNotice = trim(setting($pdo, $L === 'en' ? 'friday_notice_en' : 'friday_notice_tr'));
+if ($fridayNotice === '') $fridayNotice = $L === 'en' ? 'On Fridays, we open in the afternoon.' : 'Cuma günleri öğleden sonra açığız.';
 $address = setting($pdo,'address');
 $phone = setting($pdo,'phone');
 $email = setting($pdo,'email');
 $whatsapp = preg_replace('/\D+/', '', setting($pdo,'whatsapp'));
 $maps = setting($pdo,'maps_url');
-$instagram = setting($pdo,'instagram');
+$instagram = trim(setting($pdo,'instagram'));
+if ($instagram === '') $instagram = 'https://www.instagram.com/kebapzaderestaurant/';
 $heroImage = image_url(setting($pdo,'hero_image'));
 $storyImage = image_url(setting($pdo,'story_image'));
 $reservationEnabled = setting($pdo,'reservation_enabled','1') === '1';
@@ -85,7 +88,7 @@ if ($heroImage) $schema['image']=$heroImage;
 
 <div class="quick"><div class="wrap quick-grid">
 <a class="quick-item" <?= $maps ? 'href="'.e($maps).'" target="_blank" rel="noopener"' : ''?>><small><?=$t['location']?></small><strong><?=e($address)?></strong><span>Göreme · Cappadocia</span></a>
-<div class="quick-item"><small><?=$t['hours']?></small><strong><?=e($hours)?></strong><span><?=e($phone)?></span></div>
+<div class="quick-item"><small><?=$t['hours']?></small><strong><?=e($hours)?></strong><span><?=e($fridayNotice)?> · <?=e($phone)?></span></div>
 <a class="quick-item" href="<?= $reservationEnabled?'#reservation':('tel:'.e(preg_replace('/[^\d+]/','',$phone))) ?>"><small><?=e($t['reserve'])?></small><strong><?=e($restaurant)?></strong><span><?=e($tagline)?></span></a>
 </div></div>
 

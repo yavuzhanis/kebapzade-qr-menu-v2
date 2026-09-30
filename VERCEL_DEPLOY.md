@@ -19,7 +19,7 @@ Kod iki kimlik doğrulama biçimini destekler:
 - `BLOB_READ_WRITE_TOKEN`
 - `VERCEL_OIDC_TOKEN` + `BLOB_STORE_ID`
 
-`STORAGE_DRIVER=vercel_blob` kullanın.
+`APP_STORAGE_DRIVER=vercel_blob` ve `STORAGE_DATABASE_FALLBACK=true` kullanın. Güncel PHP entegrasyonu Blob Store ID ve public erişim header’larını otomatik gönderir.
 
 ## 3) Environment Variables
 
@@ -38,7 +38,8 @@ SESSION_LIFETIME=7200
 SESSION_AUTO_MIGRATE=true
 SESSION_SECURE_COOKIE=true
 
-STORAGE_DRIVER=vercel_blob
+APP_STORAGE_DRIVER=vercel_blob
+STORAGE_DATABASE_FALLBACK=true
 UPLOAD_MAX_BYTES=4194304
 ```
 
@@ -72,7 +73,7 @@ GitHub reposunu Vercel'e import ederek veya Vercel CLI ile deploy edebilirsiniz.
 
 ## Production notları
 
-- Container filesystem kalıcı değildir. Yeni admin görsel yüklemeleri Vercel Blob'a gider.
+- Container filesystem kalıcı değildir. Yeni admin görsel yüklemeleri önce Vercel Blob’a gider; Blob erişilemezse `STORAGE_DATABASE_FALLBACK=true` ile MySQL/TiDB içindeki `media_uploads` tablosuna kalıcı olarak yazılır.
 - PHP session verileri `app_sessions` tablosunda MySQL'e yazılır.
 - `SESSION_AUTO_MIGRATE=true` ise session tablosu eksik olduğunda otomatik oluşturulur. İsterseniz `database/vercel_upgrade.sql` dosyasını manuel çalıştırıp bunu `false` yapabilirsiniz.
 - `APP_DEBUG=false` bırakın.

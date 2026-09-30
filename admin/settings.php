@@ -4,8 +4,14 @@ $textFields=[
 'restaurant_name'=>'Restoran Adı','tagline_tr'=>'Slogan TR','tagline_en'=>'Slogan EN',
 'hero_title_tr'=>'Hero Başlık TR','hero_title_en'=>'Hero Başlık EN',
 'announcement_tr'=>'Üst Bant TR','announcement_en'=>'Üst Bant EN',
+'friday_notice_tr'=>'Cuma Bilgilendirmesi TR','friday_notice_en'=>'Cuma Bilgilendirmesi EN',
 'address'=>'Adres','phone'=>'Telefon','email'=>'E-posta','hours_tr'=>'Çalışma Saati TR','hours_en'=>'Çalışma Saati EN',
 'whatsapp'=>'WhatsApp (ülke kodu + numara)','instagram'=>'Instagram URL','maps_url'=>'Google Maps URL','price_range'=>'Google fiyat aralığı'
+];
+$fieldDefaults=[
+ 'friday_notice_tr'=>'Cuma günleri öğleden sonra açığız.',
+ 'friday_notice_en'=>'On Fridays, we open in the afternoon.',
+ 'instagram'=>'https://www.instagram.com/kebapzaderestaurant/',
 ];
 if(is_post()){
  verify_csrf();
@@ -26,9 +32,9 @@ $pageTitle='Site Ayarları';$active='settings';include __DIR__.'/_top.php';
 ?>
 <div class="head"><div><h1>Site Ayarları</h1><p>İletişim, ana sayfa görselleri ve hizmetler.</p></div></div>
 <div class="panel"><form class="form grid" method="post" enctype="multipart/form-data"><?=csrf_field()?>
-<?php foreach($textFields as $key=>$label):?>
-<label class="<?=in_array($key,['tagline_tr','tagline_en','hero_title_tr','hero_title_en','announcement_tr','announcement_en','address'])?'full':''?>"><?=$label?>
-<input class="input" name="<?=e($key)?>" value="<?=e(setting($pdo,$key))?>"></label>
+<?php foreach($textFields as $key=>$label): $fieldValue=setting($pdo,$key,$fieldDefaults[$key]??''); if($fieldValue==='' && isset($fieldDefaults[$key])) $fieldValue=$fieldDefaults[$key];?>
+<label class="<?=in_array($key,['tagline_tr','tagline_en','hero_title_tr','hero_title_en','announcement_tr','announcement_en','friday_notice_tr','friday_notice_en','address'])?'full':''?>"><?=$label?>
+<input class="input" name="<?=e($key)?>" value="<?=e($fieldValue)?>"></label>
 <?php endforeach;?>
 <div class="full"><div class="panel-title" style="padding-left:0">Marka ve Karşılama Görselleri</div></div>
 <?php foreach(['logo_image'=>'Kebapzade Logosu (şeffaf PNG önerilir)','hero_image'=>'Karşılama Arka Planı','story_image'=>'Hikâye Görseli'] as $key=>$label): $cur=setting($pdo,$key,'');?>
