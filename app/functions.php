@@ -91,3 +91,48 @@ function image_url(?string $path): string {
     if (preg_match('~^https?://~i', $path)) return $path;
     return base_url($path);
 }
+
+function ensure_grill_and_kebab_merged(PDO $pdo): void
+{
+    static $done = false;
+    if ($done) return;
+    $done = true;
+
+    try {
+        $q = $pdo->query("SELECT id, slug, name_tr FROM categories WHERE slug IN ('izgaralar', 'kebaplar', 'izgara-kebaplar')");
+        $cats = $q ? $q->fetchAll() : [];
+        if (!$cats) return;
+
+        $catMap = [];
+        foreach ($cats as $c) {
+            $catMap[$c['slug']] = (int)$c['id'];
+        }
+
+        // Hem izgaralar hem kebaplar varsa ikisini birleştir
+        if (isset($catMap['izgaralar']) && isset($catMap['kebaplar'])) {
+            $targetId = $catMap['izgaralar'];
+            $otherId = $catMap['kebaplar'];
+
+            // Kebaplar kategorisindeki tüm ürünleri tek kategoriye aktar
+            $updItems = $pdo->prepare("UPDATE items SET category_id = ? WHERE category_id = ?");
+            $updItems->execute([$targetId, $otherId]);
+
+            // Kategori başlığını 'Izgara & Kebaplar' olarak güncelle
+            $updCat = $pdo->prepare("UPDATE categories SET name_tr = 'Izgara & Kebaplar', name_en = 'Grills & Kebabs', slug = 'izgara-kebaplar' WHERE id = ?");
+            $updCat->execute([$targetId]);
+
+            // Artık boş olan diğer kategoriyi kaldır
+            $delCat = $pdo->prepare("DELETE FROM categories WHERE id = ?");
+            $delCat->execute([$otherId]);
+        } elseif (isset($catMap['izgaralar']) && !isset($catMap['kebaplar']) && !isset($catMap['izgara-kebaplar'])) {
+            $updCat = $pdo->prepare("UPDATE categories SET name_tr = 'Izgara & Kebaplar', name_en = 'Grills & Kebabs', slug = 'izgara-kebaplar' WHERE id = ?");
+            $updCat->execute([$catMap['izgaralar']]);
+        } elseif (!isset($catMap['izgaralar']) && isset($catMap['kebaplar']) && !isset($catMap['izgara-kebaplar'])) {
+            $updCat = $pdo->prepare("UPDATE categories SET name_tr = 'Izgara & Kebaplar', name_en = 'Grills & Kebabs', slug = 'izgara-kebaplar' WHERE id = ?");
+            $updCat->execute([$catMap['kebaplar']]);
+        }
+    } catch (Throwable $e) {
+        // Hata durumunda sessizce geç
+    }
+}
+

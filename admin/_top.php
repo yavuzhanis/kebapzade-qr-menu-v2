@@ -31,6 +31,7 @@ $me = admin_user();
   <a class="<?=$active==='items'?'active':''?>" href="<?=e(base_url('/admin/items.php'))?>">Ürünler</a>
   <a class="<?=$active==='categories'?'active':''?>" href="<?=e(base_url('/admin/categories.php'))?>">Kategoriler</a>
   <a class="<?=$active==='settings'?'active':''?>" href="<?=e(base_url('/admin/settings.php'))?>">Site Ayarları</a>
+  <a class="<?=$active==='about'?'active':''?>" href="<?=e(base_url('/admin/about.php'))?>">Hakkımızda</a>
   <a class="<?=$active==='users'?'active':''?>" href="<?=e(base_url('/admin/users.php'))?>">Yöneticiler</a>
   <a class="<?=$active==='qr-menu'?'active':''?>" href="<?=e(base_url('/admin/qr-menu.php'))?>">Masa QR Baskı</a>
   <a target="_blank" href="<?=e(base_url('/'))?>">Siteyi Gör ↗</a>

@@ -30,7 +30,7 @@ if(is_post()){
 }
 $pageTitle='Site Ayarları';$active='settings';include __DIR__.'/_top.php';
 ?>
-<div class="head"><div><h1>Site Ayarları</h1><p>İletişim, ana sayfa görselleri ve hizmetler.</p></div></div>
+<div class="head"><div><h1>Site Ayarları</h1><p>İletişim, ana sayfa görselleri ve hizmetler.</p></div><a class="btn" href="<?=e(base_url('/admin/about.php'))?>">Hakkımızda Sayfası Yönetimi →</a></div>
 <div class="panel"><form class="form grid" method="post" enctype="multipart/form-data"><?=csrf_field()?>
 <?php foreach($textFields as $key=>$label): $fieldValue=setting($pdo,$key,$fieldDefaults[$key]??''); if($fieldValue==='' && isset($fieldDefaults[$key])) $fieldValue=$fieldDefaults[$key];?>
 <label class="<?=in_array($key,['tagline_tr','tagline_en','hero_title_tr','hero_title_en','announcement_tr','announcement_en','friday_notice_tr','friday_notice_en','address'])?'full':''?>"><?=$label?>

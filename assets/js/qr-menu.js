@@ -332,4 +332,61 @@ document.addEventListener('DOMContentLoaded', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
+
+  // --- 7. HAKKIMIZDA MINI MODAL SHEET ---
+  const aboutModal = document.getElementById('aboutModal');
+  const closeAboutModal = document.getElementById('closeAboutModal');
+  const aboutTriggers = document.querySelectorAll('[data-about-modal-trigger]');
+
+  function openAbout() {
+    if (!aboutModal) return;
+    aboutModal.removeAttribute('hidden');
+    requestAnimationFrame(() => {
+      aboutModal.classList.add('is-open');
+    });
+    document.body.style.overflow = 'hidden';
+    aboutTriggers.forEach((btn) => btn.setAttribute('aria-expanded', 'true'));
+  }
+
+  function closeAbout() {
+    if (!aboutModal) return;
+    aboutModal.classList.remove('is-open');
+    document.body.style.overflow = '';
+    aboutTriggers.forEach((btn) => btn.setAttribute('aria-expanded', 'false'));
+    setTimeout(() => {
+      if (!aboutModal.classList.contains('is-open')) {
+        aboutModal.setAttribute('hidden', '');
+      }
+    }, 320);
+  }
+
+  aboutTriggers.forEach((trigger) => {
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      openAbout();
+    });
+  });
+
+  if (closeAboutModal) {
+    closeAboutModal.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeAbout();
+    });
+  }
+
+  if (aboutModal) {
+    aboutModal.addEventListener('click', (e) => {
+      if (e.target === aboutModal) {
+        closeAbout();
+      }
+    });
+  }
+
+  // Handle ESC key for About modal
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && aboutModal && aboutModal.classList.contains('is-open')) {
+      closeAbout();
+    }
+  });
 });
+

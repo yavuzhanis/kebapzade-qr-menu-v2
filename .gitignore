@@ -8,6 +8,8 @@ __MACOSX/
 .env.*
 !.env.example
 config/config.local.php
+*.sqlite
+database/*.sqlite
 
 # Archives & temporary deployment scripts
 *.zip

@@ -261,6 +261,12 @@ $t = [
     </div>
     <p class="foot-heritage">Göreme · Cappadocia · Est. 2008</p>
     <p class="foot-quote">"Lezzetli ve kaliteli yemek tesadüf değildir."</p>
+    <div class="foot-about-wrap">
+      <a class="qr-footer-about-pill" href="<?=e(base_url('/hakkimizda.php?lang='.$L))?>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+        <span><?= $L === 'en' ? 'About Us & Our Heritage' : 'Hakkımızda & Hikâyemiz' ?> ↗</span>
+      </a>
+    </div>
     <a class="qr-instagram-link" href="<?=e($instagram)?>" target="_blank" rel="noopener">Instagram · @kebapzaderestaurant</a>
   </footer>
 </main>

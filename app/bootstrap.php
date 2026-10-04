@@ -11,7 +11,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     $sessionConfig = $config['session'] ?? [];
     $driver = (string)($sessionConfig['driver'] ?? 'database');
 
-    if ($driver === 'database') {
+    if ($driver === 'database' && $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) !== 'sqlite') {
         require_once __DIR__ . '/database-session-handler.php';
         $handler = new DatabaseSessionHandler(
             $pdo,
@@ -45,3 +45,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/csrf.php';
 require_once __DIR__ . '/auth.php';
+
+ensure_grill_and_kebab_merged($pdo);
+
