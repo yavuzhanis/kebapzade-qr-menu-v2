@@ -36,6 +36,7 @@ if(is_post()){
      $vp=trim((string)($prices[$i]??''));$vp=$vp===''?null:str_replace(',','.',$vp);
      $vs->execute([$id,$lab,trim((string)($labelsEn[$i]??'')),$vp,($i+1)*10]);
    }
+   clear_menu_cache();
    flash('ok','Ürün kaydedildi.');redirect('/admin/items.php');
   }catch(Throwable $e){$error=$e->getMessage();}
  }

@@ -68,6 +68,7 @@ if (is_post()) {
             }
         }
 
+        clear_menu_cache();
         flash('ok', 'Hakkımızda sayfası ve hikâye bilgileri başarıyla kaydedildi.');
         redirect('/admin/about.php');
     } catch (Throwable $e) {

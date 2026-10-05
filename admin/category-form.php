@@ -20,6 +20,7 @@ if(is_post()){
     $q=$pdo->prepare('INSERT INTO categories(name_tr,name_en,slug,description_tr,description_en,image_path,sort_order,is_active) VALUES(?,?,?,?,?,?,?,?)');
     $q->execute([$nameTr,$nameEn,$slug,trim($_POST['description_tr']??''),trim($_POST['description_en']??''),$img,(int)($_POST['sort_order']??0),isset($_POST['is_active'])?1:0]);
    }
+   clear_menu_cache();
    flash('ok','Kategori kaydedildi.');redirect('/admin/categories.php');
   }catch(Throwable $e){$error='Kategori kaydedilemedi. Slug benzersiz olmalıdır.';}
  }

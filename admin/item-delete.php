@@ -4,6 +4,6 @@ if(!is_post()) redirect('/admin/items.php');
 verify_csrf();$id=(int)($_POST['id']??0);
 if($id){
  $q=$pdo->prepare('SELECT image_path FROM items WHERE id=?');$q->execute([$id]);$img=$q->fetchColumn();
- $pdo->prepare('DELETE FROM items WHERE id=?')->execute([$id]);delete_uploaded_image($img?:null);flash('ok','Ürün silindi.');
+ $pdo->prepare('DELETE FROM items WHERE id=?')->execute([$id]);delete_uploaded_image($img?:null);clear_menu_cache();flash('ok','Ürün silindi.');
 }
 redirect('/admin/items.php');

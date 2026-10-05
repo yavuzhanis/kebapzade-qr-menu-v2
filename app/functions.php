@@ -87,9 +87,26 @@ function money(?string $value): string {
 }
 
 function setting(PDO $pdo, string $key, string $default = ''): string {
-    static $cache = [];
-    if (array_key_exists($key, $cache)) return (string)$cache[$key];
+    static $cache = null;
 
+    // Tüm ayarları tek bir hafif sorguda toplu yükle (10 ayrı sorgu yerine 1 sorgu)
+    if ($cache === null) {
+        $cache = [];
+        try {
+            $rows = $pdo->query('SELECT `key`, `value` FROM settings')->fetchAll(PDO::FETCH_KEY_PAIR);
+            if (is_array($rows)) {
+                $cache = $rows;
+            }
+        } catch (Throwable $e) {
+            // sessiz devam et
+        }
+    }
+
+    if (array_key_exists($key, $cache)) {
+        return (string)$cache[$key];
+    }
+
+    // Cache'de bulunamazsa tekil sorgu fallback
     try {
         $q = $pdo->prepare('SELECT value FROM settings WHERE `key` = ? LIMIT 1');
         $q->execute([$key]);
@@ -101,11 +118,60 @@ function setting(PDO $pdo, string $key, string $default = ''): string {
     }
 }
 
+function get_menu_cache_path(): string {
+    $dir = sys_get_temp_dir() . '/kebapzade_cache';
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0777, true);
+    }
+    return $dir . '/menu_cache.json';
+}
+
+function menu_cache_get(int $ttlSeconds = 600): ?array {
+    $path = get_menu_cache_path();
+    if (!file_exists($path)) {
+        return null;
+    }
+    if ((time() - filemtime($path)) > $ttlSeconds) {
+        return null;
+    }
+    $raw = @file_get_contents($path);
+    if (!$raw) return null;
+    $data = json_decode($raw, true);
+    if (!is_array($data) || empty($data['categories'])) {
+        return null;
+    }
+    return $data;
+}
+
+function menu_cache_set(array $data): void {
+    $path = get_menu_cache_path();
+    @file_put_contents($path, json_encode($data, JSON_UNESCAPED_UNICODE));
+}
+
+function clear_menu_cache(): void {
+    $path = get_menu_cache_path();
+    if (file_exists($path)) {
+        @unlink($path);
+    }
+}
+
 function lang(): string {
     if (isset($_GET['lang'])) {
-        $_SESSION['site_lang'] = $_GET['lang'] === 'en' ? 'en' : 'tr';
+        $l = $_GET['lang'] === 'en' ? 'en' : 'tr';
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $_SESSION['site_lang'] = $l;
+        }
+        if (!headers_sent()) {
+            setcookie('site_lang', $l, [
+                'expires' => time() + 86400 * 30,
+                'path' => '/',
+                'httponly' => false,
+                'samesite' => 'Lax'
+            ]);
+        }
+        return $l;
     }
-    return ($_SESSION['site_lang'] ?? 'tr') === 'en' ? 'en' : 'tr';
+    return ($_COOKIE['site_lang'] ?? $_SESSION['site_lang'] ?? 'tr') === 'en' ? 'en' : 'tr';
 }
 
 function image_url(?string $path): string {

@@ -25,6 +25,7 @@ if(is_post()){
     if($new){delete_site_image($current);$q->execute([$key,$new]);}
     elseif(isset($_POST['remove_'.$key])){delete_site_image($current);$q->execute([$key,'']);}
   }
+  clear_menu_cache();
   flash('ok','Site ayarları kaydedildi.');redirect('/admin/settings.php');
  }catch(Throwable $e){flash('err',$e->getMessage());redirect('/admin/settings.php');}
 }

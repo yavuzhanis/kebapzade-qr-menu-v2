@@ -25,9 +25,30 @@ if ($instagram === '') $instagram = 'https://www.instagram.com/kebapzaderestaura
 
 $tableParam = trim((string)($_GET['table'] ?? ''));
 
-$cats = $pdo->query('SELECT * FROM categories WHERE is_active=1 ORDER BY sort_order,id')->fetchAll();
-$itemQ = $pdo->prepare('SELECT * FROM items WHERE category_id=? AND is_active=1 ORDER BY sort_order,id');
-$varQ = $pdo->prepare('SELECT * FROM item_variants WHERE item_id=? ORDER BY sort_order,id');
+$menuData = menu_cache_get(600);
+if (!$menuData) {
+    $cats = $pdo->query('SELECT * FROM categories WHERE is_active=1 ORDER BY sort_order,id')->fetchAll() ?: [];
+    $allItems = $pdo->query('SELECT * FROM items WHERE is_active=1 ORDER BY sort_order,id')->fetchAll() ?: [];
+    $itemsByCat = [];
+    foreach ($allItems as $it) {
+        $itemsByCat[$it['category_id']][] = $it;
+    }
+    $allVariants = $pdo->query('SELECT * FROM item_variants ORDER BY sort_order,id')->fetchAll() ?: [];
+    $variantsByItem = [];
+    foreach ($allVariants as $vt) {
+        $variantsByItem[$vt['item_id']][] = $vt;
+    }
+    $menuData = [
+        'categories' => $cats,
+        'items_by_cat' => $itemsByCat,
+        'variants_by_item' => $variantsByItem,
+    ];
+    menu_cache_set($menuData);
+}
+
+$cats = $menuData['categories'] ?? [];
+$itemsByCat = $menuData['items_by_cat'] ?? [];
+$variantsByItem = $menuData['variants_by_item'] ?? [];
 
 function qr_money(?string $v): string {
     if ($v === null || $v === '' || !is_numeric($v)) return '';
@@ -127,8 +148,7 @@ $t = [
 
   <div class="category-sections-list">
     <?php foreach ($cats as $cat): 
-      $itemQ->execute([$cat['id']]);
-      $items = $itemQ->fetchAll();
+      $items = $itemsByCat[$cat['id']] ?? [];
       if (!$items) continue;
       
       $catName = $cat[$nameCol] ?: $cat['name_tr'];
@@ -161,8 +181,7 @@ $t = [
       <div class="category-dishes-panel" data-dishes-panel hidden>
         <div class="dishes-grid">
           <?php foreach ($items as $item): 
-            $varQ->execute([$item['id']]);
-            $variants = $varQ->fetchAll();
+            $variants = $variantsByItem[$item['id']] ?? [];
             $iname = $item[$nameCol] ?: $item['name_tr'];
             $idesc = $item[$descCol] ?: $item['description_tr'];
             $img = image_url($item['image_path']);

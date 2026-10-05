@@ -7,7 +7,15 @@ date_default_timezone_set($config['app']['timezone'] ?? 'Europe/Istanbul');
 require_once __DIR__ . '/db.php';
 $pdo = db($config);
 
-if (session_status() !== PHP_SESSION_ACTIVE) {
+$uri = (string)($_SERVER['REQUEST_URI'] ?? '');
+$isPost = ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST';
+$isAdminPath = str_starts_with($uri, '/admin') || str_contains($uri, 'admin/');
+$sessionCookieName = $config['app']['session_name'] ?? 'kebapzade_admin';
+$hasSessionCookie = isset($_COOKIE[$sessionCookieName]);
+
+$needsSession = $isAdminPath || $isPost || $hasSessionCookie;
+
+if ($needsSession && session_status() !== PHP_SESSION_ACTIVE) {
     $sessionConfig = $config['session'] ?? [];
     $driver = (string)($sessionConfig['driver'] ?? 'database');
 
@@ -31,7 +39,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     ini_set('session.use_only_cookies', '1');
     ini_set('session.gc_maxlifetime', (string)($sessionConfig['lifetime'] ?? 7200));
 
-    session_name($config['app']['session_name'] ?? 'kebapzade_admin');
+    session_name($sessionCookieName);
     session_set_cookie_params([
         'lifetime' => 0,
         'path' => '/',
@@ -46,5 +54,7 @@ require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/csrf.php';
 require_once __DIR__ . '/auth.php';
 
-ensure_grill_and_kebab_merged($pdo);
+if ($isAdminPath) {
+    ensure_grill_and_kebab_merged($pdo);
+}
 
