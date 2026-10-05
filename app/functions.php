@@ -7,8 +7,15 @@ function e(?string $value): string {
 
 function base_url(string $path = ''): string {
     global $config;
-    $base = rtrim((string)($config['app']['base_url'] ?? ''), '/');
 
+    // İç linklerde kök-göreceli (root-relative) yol döndürülür (/qr-menu.php vb.)
+    // Böylece ziyaretçi hangi alan adındaysa (kebapzade.com) kesinlikle orada kalır,
+    // üçüncü parti veya vercel.app uzantılı adresler linklerde asla görünmez.
+    if ($path !== '') {
+        return '/' . ltrim($path, '/');
+    }
+
+    $base = rtrim((string)($config['app']['base_url'] ?? ''), '/');
     if ($base === '') {
         $protoHeader = trim(explode(',', (string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''))[0] ?? '');
         $proto = strtolower($protoHeader) === 'https' || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
@@ -17,9 +24,24 @@ function base_url(string $path = ''): string {
             $base = $proto . '://' . $hostHeader;
         }
     }
+    return $base;
+}
 
+function absolute_url(string $path = ''): string {
+    global $config;
+    $base = rtrim((string)($config['app']['base_url'] ?? ''), '/');
+    if ($base === '') {
+        $protoHeader = trim(explode(',', (string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''))[0] ?? '');
+        $proto = strtolower($protoHeader) === 'https' || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $hostHeader = trim(explode(',', (string)($_SERVER['HTTP_X_FORWARDED_HOST'] ?? $_SERVER['HTTP_HOST'] ?? ''))[0] ?? '');
+        if ($hostHeader !== '' && preg_match('/^[A-Za-z0-9.-]+(?::[0-9]{1,5})?$/', $hostHeader)) {
+            $base = $proto . '://' . $hostHeader;
+        } else {
+            $base = 'https://kebapzade.com';
+        }
+    }
     if ($path === '') return $base;
-    return $base !== '' ? $base . '/' . ltrim($path, '/') : '/' . ltrim($path, '/');
+    return $base . '/' . ltrim($path, '/');
 }
 
 function redirect(string $path): never {

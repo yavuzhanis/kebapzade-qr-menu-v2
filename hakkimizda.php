@@ -106,7 +106,7 @@ $t = [
 <meta name="theme-color" content="#160805">
 <title><?=e($restaurant)?> | <?=e($t['page_title'])?></title>
 <meta name="description" content="<?=e($aboutSubtitle)?> - <?=e($aboutTitle)?>: <?=e(mb_substr(strip_tags($aboutText), 0, 160))?>">
-<link rel="canonical" href="<?=e(base_url('/hakkimizda.php'))?>">
+<link rel="canonical" href="<?=e(absolute_url('/hakkimizda.php'))?>">
 <meta property="og:title" content="<?=e($restaurant)?> | <?=e($t['page_title'])?>">
 <meta property="og:description" content="<?=e($aboutTitle)?> - Kapadokya Kebapzade Restaurant Göreme">
 <meta property="og:image" content="<?=e($image1)?>">
