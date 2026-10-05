@@ -86,19 +86,40 @@ function money(?string $value): string {
     return number_format($n, $dec, ',', '.') . ' ₺';
 }
 
+function get_settings_cache_path(): string {
+    $dir = sys_get_temp_dir() . '/kebapzade_cache';
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0777, true);
+    }
+    return $dir . '/settings_cache.json';
+}
+
 function setting(PDO $pdo, string $key, string $default = ''): string {
     static $cache = null;
 
-    // Tüm ayarları tek bir hafif sorguda toplu yükle (10 ayrı sorgu yerine 1 sorgu)
     if ($cache === null) {
-        $cache = [];
-        try {
-            $rows = $pdo->query('SELECT `key`, `value` FROM settings')->fetchAll(PDO::FETCH_KEY_PAIR);
-            if (is_array($rows)) {
-                $cache = $rows;
+        $path = get_settings_cache_path();
+        if (file_exists($path) && (time() - filemtime($path) < 600)) {
+            $raw = @file_get_contents($path);
+            if ($raw) {
+                $decoded = json_decode($raw, true);
+                if (is_array($decoded)) {
+                    $cache = $decoded;
+                }
             }
-        } catch (Throwable $e) {
-            // sessiz devam et
+        }
+
+        if ($cache === null) {
+            $cache = [];
+            try {
+                $rows = $pdo->query('SELECT `key`, `value` FROM settings')->fetchAll(PDO::FETCH_KEY_PAIR);
+                if (is_array($rows)) {
+                    $cache = $rows;
+                    @file_put_contents($path, json_encode($cache, JSON_UNESCAPED_UNICODE));
+                }
+            } catch (Throwable $e) {
+                // sessiz devam et
+            }
         }
     }
 
@@ -106,16 +127,7 @@ function setting(PDO $pdo, string $key, string $default = ''): string {
         return (string)$cache[$key];
     }
 
-    // Cache'de bulunamazsa tekil sorgu fallback
-    try {
-        $q = $pdo->prepare('SELECT value FROM settings WHERE `key` = ? LIMIT 1');
-        $q->execute([$key]);
-        $v = $q->fetchColumn();
-        $cache[$key] = $v === false ? $default : (string)$v;
-        return (string)$cache[$key];
-    } catch (Throwable $e) {
-        return $default;
-    }
+    return $default;
 }
 
 function get_menu_cache_path(): string {
@@ -149,9 +161,12 @@ function menu_cache_set(array $data): void {
 }
 
 function clear_menu_cache(): void {
-    $path = get_menu_cache_path();
-    if (file_exists($path)) {
-        @unlink($path);
+    $dir = sys_get_temp_dir() . '/kebapzade_cache';
+    if (file_exists($dir . '/menu_cache.json')) {
+        @unlink($dir . '/menu_cache.json');
+    }
+    if (file_exists($dir . '/settings_cache.json')) {
+        @unlink($dir . '/settings_cache.json');
     }
 }
 
