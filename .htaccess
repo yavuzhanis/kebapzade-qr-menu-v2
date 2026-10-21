@@ -13,6 +13,10 @@ AddDefaultCharset UTF-8
   ExpiresByType image/svg+xml "access plus 30 days"
   ExpiresByType text/css "access plus 7 days"
   ExpiresByType application/javascript "access plus 7 days"
+  <Files "media.php">
+    # Generated variants provide their own versioned browser and CDN cache policy.
+    ExpiresActive Off
+  </Files>
 </IfModule>
 
 <IfModule mod_headers.c>
