@@ -2294,6 +2294,10 @@ img {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
 }
 
+[data-theme="dark"] .welcome-primary-btn.about-btn .btn-text small {
+  color: #ffffff;
+}
+
 .welcome-primary-btn.about-btn .about-icon {
   background: rgba(212, 175, 55, 0.18);
 }
