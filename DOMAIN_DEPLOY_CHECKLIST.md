@@ -1,4 +1,4 @@
-# Domain Yayını — Son Kontrol Listesi (30.09.2026)
+# Domain Yayını — Son Kontrol Listesi (21.10.2026)
 
 ## Vercel Environment Variables
 
@@ -25,9 +25,9 @@ Blob store **Public** olmalı ve projeye bağlı olmalı. Yeni Vercel bağlantı
 1. `/health.php` açın; `db` connected, `pdo_mysql`, `fileinfo` ve `curl` true olmalı.
 2. `/admin/login.php` ile giriş yapın.
 3. Bir ürüne JPG/PNG/WEBP fotoğraf yükleyin, kaydedin ve tekrar düzenleme ekranında önizlemenin geldiğini doğrulayın.
-4. `/` sayfasında QR Menü butonunun altında Instagram butonunu kontrol edin.
-5. `/` ve `/qr-menu.php` üzerinde “Cuma günleri öğleden sonra açığız.” bilgisini kontrol edin.
-6. `/qr-menu.php` üzerinden yüklenen ürün görselinin misafir tarafında göründüğünü doğrulayın.
+4. `/` sayfasında Instagram butonunun altında Google Maps konum butonunu; puan ve yorum sayısında 4,6 / 12.000 bilgisini kontrol edin.
+5. `/`, `/qr-menu.php`, `/hakkimizda.php` ve `/restaurant.php` üzerinde cuma günü notunun kaldırıldığını doğrulayın.
+6. `/qr-menu.php` üzerinden ürün görselinin göründüğünü; `media.php?id=…&w=640&v=1` isteğinin küçültülmüş bir görsel döndürdüğünü doğrulayın.
 7. Vercel > Project > Domains alanında custom domain için SSL sertifikasının `Valid` olduğunu doğrulayın.
 
 ## Fotoğraf yükleme davranışı

@@ -5,11 +5,11 @@ require __DIR__ . '/app/bootstrap.php';
 $L = lang();
 
 $restaurant = setting($pdo, 'restaurant_name', 'Kapadokya Kebapzade Restaurant');
-$logo = image_url(setting($pdo, 'logo_image', '/assets/images/logo.svg'));
+$logo = image_variant_url(setting($pdo, 'logo_image', '/assets/images/logo.svg'), 640);
 if (!$logo) {
     $logo = base_url('/assets/images/logo.svg');
 }
-$welcomeImage = image_url(setting($pdo, 'hero_image', '/assets/images/hero.jpg'));
+$welcomeImage = image_variant_url(setting($pdo, 'hero_image', '/assets/images/hero.jpg'), 1280);
 if (!$welcomeImage) {
     $welcomeImage = base_url('/assets/images/hero.jpg');
 }
@@ -19,10 +19,6 @@ $whatsapp = preg_replace('/\D+/', '', setting($pdo, 'whatsapp', '903842713012'))
 $maps = setting($pdo, 'maps_url', 'https://www.google.com/maps/search/?api=1&query=Kebapzade+Goreme');
 $address = setting($pdo, 'address', 'Bilal Eroğlu Cd. No:3, Göreme / Nevşehir');
 $hours = setting($pdo, $L === 'en' ? 'hours_en' : 'hours_tr', $L === 'en' ? '10:00 – 23:00' : '10.00 – 23.00');
-$fridayNotice = trim(setting($pdo, $L === 'en' ? 'friday_notice_en' : 'friday_notice_tr'));
-if ($fridayNotice === '') {
-    $fridayNotice = $L === 'en' ? 'On Fridays, we open in the afternoon.' : 'Cuma günleri öğleden sonra açığız.';
-}
 $instagram = trim(setting($pdo, 'instagram', 'https://www.instagram.com/kebapzaderestaurant/'));
 if ($instagram === '') {
     $instagram = 'https://www.instagram.com/kebapzaderestaurant/';
@@ -71,8 +67,8 @@ if ($quoteAuthor === '') {
 
 $ratingScore = setting($pdo, 'about_rating', '5.0');
 
-$image1 = image_url(setting($pdo, 'about_image_1', '/assets/images/about-1.jpg')) ?: base_url('/assets/images/about-1.jpg');
-$image2 = image_url(setting($pdo, 'about_image_2', '/assets/images/about-2.jpg')) ?: base_url('/assets/images/about-2.jpg');
+$image1 = image_variant_url(setting($pdo, 'about_image_1', '/assets/images/about-1.jpg'), 960) ?: base_url('/assets/images/about-1.jpg');
+$image2 = image_variant_url(setting($pdo, 'about_image_2', '/assets/images/about-2.jpg'), 960) ?: base_url('/assets/images/about-2.jpg');
 
 $t = [
     'page_title' => $L === 'en' ? 'About Us & Our Heritage' : 'Hakkımızda & Hikâyemiz',
@@ -167,10 +163,6 @@ $t = [
     </div>
     <div class="about-heritage-pill"><?=e($t['est'])?></div>
     <h1 class="about-page-main-title"><?=e($t['page_title'])?></h1>
-    <div class="friday-notice about-hero-notice" role="note">
-      <span class="friday-notice-dot" aria-hidden="true"></span>
-      <strong><?=e($fridayNotice)?></strong>
-    </div>
   </header>
 
   <!-- Story Card: Dual Column on Desktop, Mobile Optimized -->
@@ -295,7 +287,6 @@ $t = [
       <div class="quick-strip-item">
         <small><?=e($t['hours_label'])?></small>
         <strong><?=e($hours)?></strong>
-        <span><?=e($fridayNotice)?></span>
       </div>
 
       <div class="quick-strip-item actions">

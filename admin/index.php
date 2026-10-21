@@ -7,6 +7,11 @@ $recent=$pdo->query('SELECT i.*,c.name_tr category_name FROM items i JOIN catego
 $pageTitle='Genel Bakış';$active='dashboard';include __DIR__.'/_top.php';
 ?>
 <div class="head"><div><h1>Genel Bakış</h1><p>Menünün mevcut durumu ve ürün istatistikleri.</p></div><a class="btn primary" href="<?=e(base_url('/admin/item-form.php'))?>">+ Yeni Ürün</a></div>
+
+<div class="help-banner">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+  <div><strong>Hoş geldiniz!</strong>Ürün fotoğrafı eklemek için <a href="<?=e(base_url('/admin/items.php'))?>" style="color:inherit;text-decoration:underline">Ürünler</a> sayfasından ilgili ürünü düzenleyin veya yeni ürün ekleyin. Görselleri sürükleyip bırakarak kolayca yükleyebilirsiniz. Site logosu ve arka plan görseli için <a href="<?=e(base_url('/admin/settings.php'))?>" style="color:inherit;text-decoration:underline">Site Ayarları</a>'nı kullanın.</div>
+</div>
 <div class="cards">
  <div class="stat"><b><?=$itemCount?></b><span>Toplam Ürün</span></div>
  <div class="stat"><b><?=$activeCount?></b><span>Yayındaki Ürün</span></div>

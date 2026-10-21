@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/images.php';
+
 function upload_menu_image(array $file, array $config): ?string {
     return upload_image($file, $config, 'menu');
 }
@@ -59,6 +61,19 @@ function upload_image(array $file, array $config, string $scope): ?string {
     ];
     if (!isset($allowed[$mime])) {
         throw new RuntimeException('Sadece JPG, PNG veya WEBP yükleyebilirsiniz.');
+    }
+
+    // Store future uploads at display resolution instead of multi-megabyte originals.
+    $body = file_get_contents($tmpName);
+    if ($body === false || @getimagesizefromstring($body) === false) {
+        throw new RuntimeException('Görsel dosyası okunamadı.');
+    }
+    $optimized = optimized_image($body, $scope === 'menu' ? 960 : 1600);
+    if (strlen($optimized['body']) < strlen($body)) {
+        if (file_put_contents($tmpName, $optimized['body']) === false) {
+            throw new RuntimeException('Görsel küçültülemedi.');
+        }
+        $mime = $optimized['mime'];
     }
 
     $filename = bin2hex(random_bytes(16)) . '.' . $allowed[$mime];

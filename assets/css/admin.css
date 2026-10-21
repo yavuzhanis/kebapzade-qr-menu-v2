@@ -1,6 +1,6 @@
 /* ==========================================================================
-   Kebapzade Admin Panel - Modern Luxury Design System
-   Default: Light Mode
+   Kebapzade Admin Panel - Modern Luxury Design System v2
+   Tamamen yenilenmiş admin panel tasarımı
    ========================================================================== */
 
 :root,
@@ -23,6 +23,9 @@
   --green: #2e7d32;
   --green-bg: #edf7ee;
   --green-border: #b8e0ba;
+  --blue: #1565c0;
+  --blue-bg: #e8f0fe;
+  --blue-border: #a8c7f5;
   --side-border: #e8ded4;
   --nav-color: #5c4b41;
   --nav-hover-bg: #f5eee5;
@@ -36,6 +39,11 @@
   --btn-color: #38241a;
   --shadow-sm: 0 2px 8px rgba(35, 12, 7, 0.04);
   --shadow-md: 0 6px 20px rgba(35, 12, 7, 0.07);
+  --upload-bg: #fdfbf8;
+  --upload-border: #d9cec3;
+  --upload-hover-bg: #fef7ea;
+  --upload-hover-border: #c4963c;
+  --upload-active-bg: #fdf0d5;
 }
 
 [data-theme="dark"] {
@@ -57,6 +65,9 @@
   --green: #77a17a;
   --green-bg: #173521;
   --green-border: #315d3e;
+  --blue: #6fa8dc;
+  --blue-bg: #1a2a3e;
+  --blue-border: #2a4a6e;
   --side-border: #29221c;
   --nav-color: #b7aea6;
   --nav-hover-bg: #211a15;
@@ -70,6 +81,11 @@
   --btn-color: #eeeeee;
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
   --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.4);
+  --upload-bg: #14100d;
+  --upload-border: #40352c;
+  --upload-hover-bg: rgba(199, 149, 80, 0.08);
+  --upload-hover-border: #c79550;
+  --upload-active-bg: rgba(199, 149, 80, 0.12);
 }
 
 *, *::before, *::after {
@@ -538,6 +554,12 @@ textarea {
   color: var(--red);
 }
 
+.notice.info {
+  background: var(--blue-bg);
+  border: 1px solid var(--blue-border);
+  color: var(--blue);
+}
+
 .thumb {
   width: 64px;
   height: 48px;
@@ -552,6 +574,243 @@ textarea {
   border: 1px solid var(--line);
   margin-top: 10px;
   box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   DRAG & DROP UPLOAD ZONE - Yeni gelişmiş görsel yükleme
+   ========================================================================== */
+
+.upload-zone {
+  position: relative;
+  border: 2px dashed var(--upload-border);
+  border-radius: 14px;
+  background: var(--upload-bg);
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-top: 8px;
+}
+
+.upload-zone:hover {
+  border-color: var(--upload-hover-border);
+  background: var(--upload-hover-bg);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.upload-zone.drag-over {
+  border-color: var(--gold);
+  background: var(--upload-active-bg);
+  border-style: solid;
+  box-shadow: 0 0 0 4px rgba(196, 150, 60, 0.15), var(--shadow-md);
+  transform: scale(1.01);
+}
+
+.upload-zone.has-file {
+  border-style: solid;
+  border-color: var(--green-border);
+  background: var(--green-bg);
+}
+
+.upload-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.upload-zone-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.upload-zone-icon svg {
+  width: 36px;
+  height: 36px;
+  color: var(--gold);
+  opacity: 0.7;
+  transition: all 0.2s;
+}
+
+.upload-zone:hover .upload-zone-icon svg,
+.upload-zone.drag-over .upload-zone-icon svg {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.upload-zone-text {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.upload-zone-hint {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.upload-zone-filename {
+  display: none;
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green);
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+
+.upload-zone.has-file .upload-zone-filename {
+  display: inline-flex;
+}
+
+.upload-zone.has-file .upload-zone-text {
+  color: var(--green);
+}
+
+/* Upload Preview */
+.upload-preview-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: 12px;
+  padding: 14px;
+  background: var(--panel-subtle);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.upload-preview-wrap img {
+  width: 120px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.upload-preview-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.upload-preview-info .file-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-dark);
+  word-break: break-all;
+  margin: 0 0 4px;
+}
+
+.upload-preview-info .file-meta {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.upload-preview-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* Image preview with existing image */
+.existing-image-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: 12px;
+  padding: 14px;
+  background: var(--panel-subtle);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  animation: fadeIn 0.3s ease;
+}
+
+.existing-image-wrap img {
+  width: 140px;
+  height: 105px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.existing-image-wrap img:hover {
+  transform: scale(1.04);
+}
+
+.existing-image-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.existing-image-info .label-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--gold-light);
+  color: var(--gold-dark);
+  margin-bottom: 6px;
+}
+
+[data-theme="dark"] .existing-image-info .label-tag {
+  background: rgba(199, 149, 80, 0.2);
+  color: var(--gold);
+}
+
+.existing-image-info p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Upload tips */
+.upload-tips {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.upload-tip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--muted);
+  padding: 4px 10px;
+  background: var(--panel-subtle);
+  border: 1px solid var(--line-light);
+  border-radius: 8px;
+}
+
+.upload-tip svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
 }
 
 /* ==========================================================================
@@ -640,6 +899,36 @@ textarea {
 }
 
 /* ==========================================================================
+   Help Banner (yardım mesajları)
+   ========================================================================== */
+
+.help-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  background: var(--blue-bg);
+  border: 1px solid var(--blue-border);
+  color: var(--blue);
+  line-height: 1.5;
+}
+
+.help-banner svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.help-banner strong {
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* ==========================================================================
    Responsive Breakpoints
    ========================================================================== */
 
@@ -685,6 +974,14 @@ textarea {
   }
   .grid {
     grid-template-columns: 1fr;
+  }
+  .existing-image-wrap {
+    flex-direction: column;
+  }
+  .existing-image-wrap img {
+    width: 100%;
+    height: auto;
+    max-height: 180px;
   }
 }
 
@@ -738,6 +1035,17 @@ textarea {
   .table-wrap table td {
     padding: 10px 12px;
     font-size: 12.5px;
+  }
+  .upload-zone {
+    padding: 20px 14px;
+  }
+  .upload-preview-wrap {
+    flex-direction: column;
+  }
+  .upload-preview-wrap img {
+    width: 100%;
+    height: auto;
+    max-height: 150px;
   }
 }
 

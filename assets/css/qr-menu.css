@@ -506,8 +506,95 @@ img {
 }
 
 .welcome-card.clean-hero .welcome-primary-btn {
-  margin-bottom: 0;
+  margin-bottom: 12px;
   padding: 18px 24px;
+}
+
+/* Instagram Button */
+:is(.welcome-instagram-btn, .welcome-maps-btn) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(131, 58, 180, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+:is(.welcome-instagram-btn, .welcome-maps-btn)::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  transform: rotate(25deg);
+  animation: btnShimmer 5s infinite 1s;
+}
+
+:is(.welcome-instagram-btn, .welcome-maps-btn):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(131, 58, 180, 0.4);
+  filter: brightness(1.05);
+}
+
+:is(.welcome-instagram-btn, .welcome-maps-btn):active {
+  transform: translateY(1px);
+}
+
+:is(.welcome-instagram-btn, .welcome-maps-btn) .btn-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+:is(.welcome-instagram-btn, .welcome-maps-btn) .btn-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: #ffffff;
+}
+
+:is(.welcome-instagram-btn, .welcome-maps-btn) .btn-text {
+  flex-grow: 1;
+  text-align: left;
+}
+
+:is(.welcome-instagram-btn, .welcome-maps-btn) .btn-text strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+:is(.welcome-instagram-btn, .welcome-maps-btn) .btn-text small {
+  display: block;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+:is(.welcome-instagram-btn, .welcome-maps-btn) .btn-arrow svg {
+  width: 18px;
+  height: 18px;
+  stroke: #ffffff;
+  transition: transform 0.2s;
+}
+
+:is(.welcome-instagram-btn, .welcome-maps-btn):hover .btn-arrow svg {
+  transform: translate(3px, -3px);
 }
 
 .welcome-card.clean-hero .welcome-logo {
@@ -1172,7 +1259,6 @@ img {
   min-height: 190px;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background-image: var(--cat-bg);
   background-size: cover;
   background-position: center;
   box-shadow: var(--shadow-md);
@@ -2062,6 +2148,19 @@ img {
     padding: 4px 9px;
     font-size: 10px;
   }
+  :is(.welcome-instagram-btn, .welcome-maps-btn) {
+    padding: 12px 14px;
+  }
+  :is(.welcome-instagram-btn, .welcome-maps-btn) .btn-text strong {
+    font-size: 13px;
+  }
+  :is(.welcome-instagram-btn, .welcome-maps-btn) .btn-text small {
+    font-size: 10px;
+  }
+  :is(.welcome-instagram-btn, .welcome-maps-btn) .btn-icon {
+    width: 34px;
+    height: 34px;
+  }
 }
 
 /* Compact Smartphones (max 360px - e.g. iPhone SE, mini) */
@@ -2107,36 +2206,6 @@ img {
 
 
 /* === 2026-09-30 production notices + Instagram CTA === */
-/* Friday notice is intentionally light/cream so it remains readable on the dark hero card. */
-.friday-notice {
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  width:100%;
-  margin:-8px 0 18px;
-  padding:11px 15px;
-  border:1px solid rgba(231,190,99,.78);
-  border-radius:12px;
-  background:linear-gradient(135deg,#fff4d8 0%,#f4d89b 100%);
-  color:#32180d;
-  box-shadow:0 8px 20px rgba(32,10,5,.16), inset 0 1px 0 rgba(255,255,255,.72);
-  font-size:12px;
-  line-height:1.35;
-  text-align:center;
-}
-.friday-notice strong {
-  color:#32180d;
-  font-weight:800;
-}
-.friday-notice-dot {
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  background:#b8860b;
-  box-shadow:0 0 0 4px rgba(184,134,11,.16);
-  flex:0 0 auto;
-}
 
 /* Instagram keeps the restaurant's brown/gold visual language instead of brand pink. */
 .welcome-card.clean-hero .instagram-btn {
@@ -2178,36 +2247,6 @@ img {
   color:#d9b85d;
 }
 
-/* Use the same readable Friday treatment inside the QR menu. */
-.menu-friday-notice {
-  display:flex;
-  align-items:center;
-  gap:10px;
-  max-width:860px;
-  margin:0 auto 16px;
-  padding:12px 15px;
-  border-radius:14px;
-  border:1px solid rgba(212,175,55,.45);
-  background:linear-gradient(135deg,#fff7e5 0%,#f7e5bd 100%);
-  color:#32180d;
-  box-shadow:0 5px 16px rgba(44,14,9,.08);
-  font-size:12px;
-  line-height:1.4;
-}
-.menu-friday-notice strong {
-  color:#32180d;
-}
-.menu-friday-notice > span {
-  display:grid;
-  place-items:center;
-  width:22px;
-  height:22px;
-  border-radius:50%;
-  background:#b8860b;
-  color:#fff;
-  font-weight:800;
-  flex:0 0 auto;
-}
 .qr-instagram-link {
   display:inline-flex;
   align-items:center;
@@ -2224,10 +2263,6 @@ img {
 .qr-instagram-link:hover { transform:translateY(-1px); }
 
 @media (max-width: 520px) {
-  .friday-notice {
-    padding:10px 12px;
-    font-size:11.5px;
-  }
   .welcome-card.clean-hero .instagram-btn {
     padding:11px 14px;
     min-height:58px;
@@ -3100,3 +3135,23 @@ img {
   transform: translateY(-1px);
 }
 
+
+/* Restaurant location action below Instagram. */
+.welcome-maps-btn {
+  margin-top: 12px;
+  background: linear-gradient(135deg, #1d604b, #28765c);
+  box-shadow: 0 8px 24px rgba(24, 82, 61, 0.22);
+}
+.welcome-maps-btn::after { display: none; }
+.welcome-maps-btn:hover { box-shadow: 0 12px 28px rgba(24, 82, 61, 0.28); }
+.welcome-maps-btn .btn-text { min-width: 0; }
+.welcome-maps-btn .btn-text small { overflow-wrap: anywhere; }
+
+.category-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}

@@ -18,8 +18,6 @@ $whatsapp = preg_replace('/\D+/', '', setting($pdo, 'whatsapp', '903842713012'))
 $maps = setting($pdo, 'maps_url', 'https://www.google.com/maps/search/?api=1&query=Kebapzade+Goreme');
 $wifiPass = setting($pdo, 'wifi_pass', 'kebapzade2026');
 $hours = setting($pdo, $L === 'en' ? 'hours_en' : 'hours_tr', $L === 'en' ? '10:00 – 23:00' : '10.00 – 23.00');
-$fridayNotice = trim(setting($pdo, $L === 'en' ? 'friday_notice_en' : 'friday_notice_tr'));
-if ($fridayNotice === '') $fridayNotice = $L === 'en' ? 'On Fridays, we open in the afternoon.' : 'Cuma günleri öğleden sonra açığız.';
 $instagram = trim(setting($pdo, 'instagram', 'https://www.instagram.com/kebapzaderestaurant/'));
 if ($instagram === '') $instagram = 'https://www.instagram.com/kebapzaderestaurant/';
 
@@ -133,10 +131,6 @@ $t = [
 
 <!-- Main Menu Content -->
 <main class="menu-content-wrap">
-  <div class="menu-friday-notice" role="note">
-    <span aria-hidden="true">i</span>
-    <strong><?=e($fridayNotice)?></strong>
-  </div>
   <div class="search-results-feedback" data-results-counter hidden></div>
   <div class="no-results-card" data-no-results hidden>
     <div class="no-results-icon">
@@ -147,13 +141,13 @@ $t = [
   </div>
 
   <div class="category-sections-list">
-    <?php foreach ($cats as $cat): 
+    <?php foreach ($cats as $cat):
       $items = $itemsByCat[$cat['id']] ?? [];
       if (!$items) continue;
-      
+
       $catName = $cat[$nameCol] ?: $cat['name_tr'];
       $catDesc = $cat[$descCol] ?: $cat['description_tr'];
-      $cover = image_url($cat['image_path'] ?? '');
+      $cover = image_variant_url($cat['image_path'] ?? '', 960);
       if (!$cover) {
         $cover = base_url('/assets/images/hero.jpg');
       }
@@ -161,7 +155,8 @@ $t = [
     ?>
     <section class="menu-category-section" id="cat-<?=e($cat['slug'])?>" data-category data-category-search="<?=e($catSearch)?>">
       <!-- Category Banner Card (Tap to Expand/Collapse Dishes) -->
-      <button type="button" class="category-hero-card" data-category-toggle aria-expanded="false" style="--cat-bg:url('<?=e($cover)?>')">
+      <button type="button" class="category-hero-card" data-category-toggle aria-expanded="false">
+        <img class="category-cover" src="<?=e($cover)?>" alt="" width="960" height="540" loading="lazy" decoding="async">
         <div class="cat-overlay"></div>
         <div class="cat-hero-info">
           <div class="cat-badge-line">
@@ -180,11 +175,13 @@ $t = [
       <!-- Dishes Container (Hidden by default, opens on click) -->
       <div class="category-dishes-panel" data-dishes-panel hidden>
         <div class="dishes-grid">
-          <?php foreach ($items as $item): 
+          <?php foreach ($items as $item):
             $variants = $variantsByItem[$item['id']] ?? [];
             $iname = $item[$nameCol] ?: $item['name_tr'];
             $idesc = $item[$descCol] ?: $item['description_tr'];
-            $img = image_url($item['image_path']);
+            $imagePath = $item['image_path'] ?: ($cat['image_path'] ?: '/assets/images/hero.jpg');
+            $img = image_variant_url($imagePath, 640);
+            $zoomImg = image_variant_url($imagePath, 1280);
             if (!$img) {
               $img = $cover;
             }
@@ -192,27 +189,27 @@ $t = [
             $formattedPrice = qr_money((string)$item['price']);
             $itemSearch = $item['name_tr'].' '.$item['name_en'].' '.$item['description_tr'].' '.$item['description_en'].' '.$catSearch;
           ?>
-          <article class="dish-card" 
-                   data-menu-item 
+          <article class="dish-card"
+                   data-menu-item
                    data-id="<?=e((string)$item['id'])?>"
                    data-name="<?=e($iname)?>"
                    data-price="<?=e((string)$itemPrice)?>"
                    data-formatted-price="<?=e($formattedPrice)?>"
-                   data-img="<?=e($img)?>"
+                   data-img="<?=e($zoomImg)?>"
                    data-desc="<?=e($idesc)?>"
                    data-featured="<?=$item['is_featured'] ? '1' : '0'?>"
                    data-spicy="<?=$item['is_spicy'] ? '1' : '0'?>"
                    data-veg="<?=$item['is_vegetarian'] ? '1' : '0'?>"
                    data-search="<?=e($itemSearch)?>">
-            
+
             <!-- Food Photo (Tap to zoom image) -->
-            <div class="dish-media-wrap" 
-                 data-lightbox-trigger 
-                 data-lightbox-img="<?=e($img)?>" 
-                 data-lightbox-title="<?=e($iname)?>" 
+            <div class="dish-media-wrap"
+                 data-lightbox-trigger
+                 data-lightbox-img="<?=e($zoomImg)?>"
+                 data-lightbox-title="<?=e($iname)?>"
                  data-lightbox-price="<?=e($formattedPrice)?>"
                  title="<?=e($t['tap_to_zoom'])?>">
-              <img src="<?=e($img)?>" alt="<?=e($iname)?>" loading="lazy" class="dish-img">
+              <img src="<?=e($img)?>" alt="<?=e($iname)?>" loading="lazy" decoding="async" width="640" height="480" class="dish-img">
               <div class="dish-floating-badges">
                 <?php if ($item['is_featured']): ?>
                   <span class="badge-featured" title="<?=e($t['featured'])?>"><?=e($t['featured'])?></span>
@@ -292,10 +289,10 @@ $t = [
 
 <!-- Floating Circular WhatsApp Button (As in User Screenshot) -->
 <?php if ($whatsapp): ?>
-<a href="https://wa.me/<?=e($whatsapp)?><?= $tableParam ? '?text='.urlencode('Merhaba Kebapzade, Masa '.$tableParam.' için servis rica ediyoruz.') : '' ?>" 
-   target="_blank" 
-   rel="noopener" 
-   class="floating-wa-circle" 
+<a href="https://wa.me/<?=e($whatsapp)?><?= $tableParam ? '?text='.urlencode('Merhaba Kebapzade, Masa '.$tableParam.' için servis rica ediyoruz.') : '' ?>"
+   target="_blank"
+   rel="noopener"
+   class="floating-wa-circle"
    aria-label="WhatsApp İletişim">
   <svg viewBox="0 0 24 24" fill="currentColor">
     <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm5.8 14.15c-.24.67-1.39 1.28-1.92 1.34-.51.06-1.16.08-3.76-.99-2.22-.92-3.66-3.18-3.77-3.33-.11-.15-.9-1.2-0.9-2.29s.57-1.63.78-1.85c.2-.22.45-.28.6-.28.15 0 .3 0 .43.01.14.01.32-.05.5.39.19.46.65 1.58.71 1.7.06.12.09.26.02.41-.08.15-.12.24-.24.38-.12.14-.26.31-.37.42-.12.12-.25.26-.11.5.14.24.63 1.04 1.35 1.68.93.83 1.71 1.09 1.95 1.21.24.12.38.1.52-.06.15-.17.61-.71.77-.96.17-.24.33-.2.56-.12.23.08 1.48.7 1.73.82.25.13.42.19.48.3.06.11.06.66-.18 1.33z"/>

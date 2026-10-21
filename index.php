@@ -4,19 +4,18 @@ require __DIR__ . '/app/bootstrap.php';
 
 $L = lang();
 $restaurant = setting($pdo, 'restaurant_name', 'Kapadokya Kebapzade Restaurant');
-$logo = image_url(setting($pdo, 'logo_image', '/assets/images/logo.svg'));
+$logo = image_variant_url(setting($pdo, 'logo_image', '/assets/images/logo.svg'), 640);
 if (!$logo) {
     $logo = base_url('/assets/images/logo.svg');
 }
-$welcomeImage = image_url(setting($pdo, 'hero_image', '/assets/images/hero.jpg'));
+$welcomeImage = image_variant_url(setting($pdo, 'hero_image', '/assets/images/hero.jpg'), 1280);
 if (!$welcomeImage) {
     $welcomeImage = base_url('/assets/images/hero.jpg');
 }
 
 $address = setting($pdo, 'address', 'Bilal Eroğlu Cd. No:3, Göreme / Nevşehir');
 $hours = setting($pdo, $L === 'en' ? 'hours_en' : 'hours_tr', $L === 'en' ? '10:00 – 23:00' : '10.00 – 23.00');
-$fridayNotice = trim(setting($pdo, $L === 'en' ? 'friday_notice_en' : 'friday_notice_tr'));
-if ($fridayNotice === '') $fridayNotice = $L === 'en' ? 'On Fridays, we open in the afternoon.' : 'Cuma günleri öğleden sonra açığız.';
+$maps = trim(setting($pdo, 'maps_url')) ?: 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode('Kapadokya Kebapzade Restaurant ' . $address);
 $instagram = trim(setting($pdo, 'instagram', 'https://www.instagram.com/kebapzaderestaurant/'));
 if ($instagram === '') $instagram = 'https://www.instagram.com/kebapzaderestaurant/';
 
@@ -51,24 +50,25 @@ if ($quoteText === '') {
 $quoteAuthor = setting($pdo, $L === 'en' ? 'about_quote_author_en' : 'about_quote_author_tr');
 if ($quoteAuthor === '') $quoteAuthor = $L === 'en' ? 'Guest Review · Tripadvisor' : 'Müşteri Değerlendirmesi · Tripadvisor';
 
-$image1 = image_url(setting($pdo, 'about_image_1', '/assets/images/about-1.jpg')) ?: base_url('/assets/images/about-1.jpg');
-$image2 = image_url(setting($pdo, 'about_image_2', '/assets/images/about-2.jpg')) ?: base_url('/assets/images/about-2.jpg');
+$image1 = image_variant_url(setting($pdo, 'about_image_1', '/assets/images/about-1.jpg'), 960) ?: base_url('/assets/images/about-1.jpg');
+$image2 = image_variant_url(setting($pdo, 'about_image_2', '/assets/images/about-2.jpg'), 960) ?: base_url('/assets/images/about-2.jpg');
 
 $t = [
-    'title' => $L === 'en' ? 'Welcome to Kebapzade' : 'Kebapzade’ye Hoş Geldiniz',
+    'title' => $L === 'en' ? 'Welcome to Kebapzade' : 'Kebapzade\'ye Hoş Geldiniz',
     'tagline' => $L === 'en'
         ? 'Traditional Anatolian recipes, stone oven magic and charcoal grills in the heart of Cappadocia.'
-        : 'Kapadokya’nın kalbinde taş fırın ateşi, kömür ızgarası ve asırlık Anadolu lezzetleri.',
+        : 'Kapadokya\'nın kalbinde taş fırın ateşi, kömür ızgarası ve asırlık Anadolu lezzetleri.',
     'open' => $L === 'en' ? 'Open' : 'Açık',
     'view_menu' => $L === 'en' ? 'Explore Digital QR Menu' : 'Dijital QR Menüyü İncele',
     'menu_sub' => $L === 'en' ? 'Dishes, pottery kebab, appetizers & drinks' : 'Yemekler, testi kebabı, mezeler ve içecekler',
     'about_btn' => $L === 'en' ? 'About Us & Our Story' : 'Hakkımızda & Hikâyemiz',
     'about_sub' => $L === 'en' ? 'Culinary journey since 2008' : '2008’den bugüne lezzet yolculuğumuz',
-    'instagram' => $L === 'en' ? 'Visit us on Instagram' : 'Instagram’da Bizi Takip Edin',
+    'instagram_btn' => $L === 'en' ? 'Visit us on Instagram' : 'Instagram’da Bizi Takip Edin',
     'instagram_sub' => '@kebapzaderestaurant',
     'badge_testi' => $L === 'en' ? 'Famous Pottery Kebab' : 'Meşhur Testi Kebabı',
     'badge_fire' => $L === 'en' ? 'Stone Oven & Charcoal' : 'Taş Fırın & Kömür Ateşi',
-    'badge_rating' => '4.9 ★ (1.200+ Reviews)',
+    'badge_rating' => $L === 'en' ? '4.6 ★ (12,000 Reviews)' : '4,6 ★ (12.000 Yorum)',
+    'maps_btn' => $L === 'en' ? 'Find Us on Google Maps' : 'Google Maps’te Konumumuz',
     'est' => 'EST. 2008 · GÖREME · CAPPADOCIA',
     'full_page_link' => $L === 'en' ? 'View Full Page ↗' : 'Detaylı Sayfayı Gör ↗',
     'tripadvisor' => 'Tripadvisor',
@@ -103,7 +103,7 @@ $t = [
       <span class="status-dot"></span>
       <span><?=e($t['open'])?> · <?=e($hours)?></span>
     </div>
-    
+
     <div class="welcome-topbar-right">
       <!-- Dark / Light Theme Toggle Button -->
       <button type="button" class="theme-toggle-btn" data-theme-toggle title="<?= $L === 'en' ? 'Toggle Dark / Light Theme' : 'Aydınlık / Karanlık Mod' ?>" aria-label="<?= $L === 'en' ? 'Toggle Theme' : 'Görünüm Modunu Değiştir' ?>">
@@ -136,10 +136,7 @@ $t = [
 
     <h1 id="welcome-title"><?=e($t['title'])?></h1>
     <p class="welcome-copy"><?=e($t['tagline'])?></p>
-    <div class="friday-notice" role="note">
-      <span class="friday-notice-dot" aria-hidden="true"></span>
-      <strong><?=e($fridayNotice)?></strong>
-    </div>
+
 
     <!-- Main QR Menu Action Button -->
     <a class="welcome-primary-btn" href="<?=e(base_url('/qr-menu.php?lang='.$L))?>">
@@ -169,18 +166,28 @@ $t = [
       </div>
     </button>
 
-    <!-- Instagram Action Button -->
-    <a class="welcome-primary-btn instagram-btn" href="<?=e($instagram)?>" target="_blank" rel="noopener" aria-label="Instagram">
-      <div class="btn-icon instagram-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle></svg>
+    <!-- Instagram Button -->
+    <?php if($instagram):?>
+    <a class="welcome-instagram-btn" href="<?=e($instagram)?>" target="_blank" rel="noopener">
+      <div class="btn-icon instagram-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
       </div>
       <div class="btn-text">
-        <strong><?=e($t['instagram'])?></strong>
+        <strong><?=e($t['instagram_btn'])?></strong>
         <small><?=e($t['instagram_sub'])?></small>
       </div>
       <div class="btn-arrow" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
       </div>
+    </a>
+    <?php endif;?>
+
+    <a class="welcome-maps-btn" href="<?=e($maps)?>" target="_blank" rel="noopener">
+      <span class="btn-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+      </span>
+      <span class="btn-text"><strong><?=e($t['maps_btn'])?></strong><small><?=e($address)?></small></span>
+      <span class="btn-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg></span>
     </a>
   </section>
 
@@ -231,7 +238,7 @@ $t = [
 
       <!-- Story Text -->
       <div class="about-sheet-text">
-        <?php 
+        <?php
         $paragraphs = preg_split('/\r\n\r\n|\n\n|\r\r/', $aboutText);
         foreach ($paragraphs as $para):
           $para = trim($para);

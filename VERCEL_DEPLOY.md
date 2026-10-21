@@ -73,6 +73,10 @@ GitHub reposunu Vercel'e import ederek veya Vercel CLI ile deploy edebilirsiniz.
 
 ## Production notları
 
+- `Dockerfile.vercel` JPEG/WebP destekli GD ve EXIF eklentilerini kurar. Yeni yüklemeler otomatik küçültülür; mevcut veritabanı görselleri `/media.php?id=…&w=640&v=1` gibi adreslerle küçük kopyalar olarak sunulur. Orijinaller değiştirilmez.
+- Küçük görseller container geçici dizininde ve CDN/browser önbelleğinde tutulur. Yeniden başlatma sonrasında ilk istek kopyayı tekrar üretir. Optimizasyon ayarları değişirse `app/images.php` URL sürümü ve `media.php` önbellek sürümü birlikte artırılmalıdır.
+- Görsel kontrolleri: `php tests/images.php`. Docker build doğrulaması için Docker servisinin çalışıyor olması gerekir.
+
 - Container filesystem kalıcı değildir. Yeni admin görsel yüklemeleri önce Vercel Blob’a gider; Blob erişilemezse `STORAGE_DATABASE_FALLBACK=true` ile MySQL/TiDB içindeki `media_uploads` tablosuna kalıcı olarak yazılır.
 - PHP session verileri `app_sessions` tablosunda MySQL'e yazılır.
 - `SESSION_AUTO_MIGRATE=true` ise session tablosu eksik olduğunda otomatik oluşturulur. İsterseniz `database/vercel_upgrade.sql` dosyasını manuel çalıştırıp bunu `false` yapabilirsiniz.
